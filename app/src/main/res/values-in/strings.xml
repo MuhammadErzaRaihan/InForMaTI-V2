@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PROJECT HMTI</string>
+    <string name="settings">Pengaturan</string>
+    <string name="theme">Tema</string>
+    <string name="back">Kembali</string>
+    <string name="light_mode">Mode Terang</string>
+    <string name="Schedule">Jadwal</string>
+    <string name="dark_mode">Mode Gelap</string>
+    <string name="language">Bahasa</string>
+    <string name="indonesian">Indonesia</string>
+    <string name="english">Inggris</string>
+    <string name="announcement">Pengumuman</string>
+    <string name="search">Cari</string>
+    <string name="login">Masuk</string>
+    <string name="Regist">Daftar</string>
+    <string name="recovery">Pulihkan</string>
+    <string name="Nonew">Tidak ada yang baru</string>
+    <string name="notif">Notifikasi</string>
+    <string name="profile_detail">Detail Profil</string>
+    <string name="back_button">Kembali</string>
+    <string name="profile_picture">PF</string>
+    <string name="profile_details_section">Detail Profil</string>
+    <string name="name">Nama</string>
+    <string name="nim">NIM</string>
+    <string name="dob">Tanggal Lahir</string>
+    <string name="back_to_home">Kembali ke Home</string>
+    <string name="add_schedule">Tambah Jadwal</string>
+    <string name="edit_schedule">Edit Jadwal</string>
+    <string name="delete_schedule">Hapus Jadwal</string>
+    <string name="executor">Pelaksana</string>
+    <string name="room">Ruang</string>
+    <string name="time">Jam</string>
+    <string name="email">E-mail</string>
+    <string name="out">Keluar</string>
+    <string name="roles">HIRARKI</string>
+    <string name="sort">Urutkan</string>
+    <string name="status">Keterangan</string>
+    <string name="submit">Ajukan</string>
+    <string name="already">Sudah punya akun?</string>
+
+
+
+
+
+
+
+
+
+</resources>
