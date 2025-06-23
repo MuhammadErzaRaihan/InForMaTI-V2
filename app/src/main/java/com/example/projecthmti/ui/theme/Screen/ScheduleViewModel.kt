@@ -1,53 +1,104 @@
 package com.example.projecthmti.ui.theme.Screen
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.viewModelScope
+import com.example.projecthmti.domain.model.ScheduleItem
+import com.example.projecthmti.domain.usecase.AddScheduleUseCase
+import com.example.projecthmti.domain.usecase.DeleteScheduleUseCase
+import com.example.projecthmti.domain.usecase.EditScheduleUseCase
+import com.example.projecthmti.domain.usecase.GetSchedulesUseCase
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-// ScheduleItem sudah ada di Schedule.kt, kita gunakan lagi di sini
-
-// UI State untuk menampung daftar jadwal
 data class ScheduleUiState(
-    val schedules: List<ScheduleItem> = emptyList()
+    val schedules: List<ScheduleItem> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val isDialogShown: Boolean = false,
+    val editingSchedule: ScheduleItem? = null
 )
 
-class ScheduleViewModel : ViewModel() {
+class ScheduleViewModel(
+    private val getSchedulesUseCase: GetSchedulesUseCase,
+    private val addScheduleUseCase: AddScheduleUseCase,
+    private val editScheduleUseCase: EditScheduleUseCase,
+    private val deleteScheduleUseCase: DeleteScheduleUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ScheduleUiState())
     val uiState: StateFlow<ScheduleUiState> = _uiState.asStateFlow()
 
     init {
-        // Inisialisasi data jadwal.
-        // Nantinya, data ini akan diambil dari Repository.
-        loadSchedules()
+        // Panggil fungsi untuk mulai mendengarkan perubahan dari database
+        observeSchedules()
     }
 
-    private fun loadSchedules() {
-        // Data yang sebelumnya hardcoded di UI, sekarang dikelola di ViewModel
-        val scheduleList = listOf(
-            ScheduleItem("RAPAT PARIPURNA", "WINDAH BASUDARA", "A-14", "08.00 - 10.30"),
-            ScheduleItem("RAPAT MBG", "PRAVRORO", "A-14", "08.00 - 10.30"),
-            ScheduleItem("RAPAT BOCIL KEMATIAN", "TARA DUGONG", "A-14", "08.00 - 10.30"),
-            ScheduleItem("RAPAT SKIBIDI", "JOHNNY G PIRING", "A-14", "08.00 - 10.30"),
-            ScheduleItem("RAPAT RIZZ", "ZU KO WI", "A-14", "08.00 - 10.30"),
-            ScheduleItem("RAPAT GYATT", "CABUZERO DAGUSQUERO", "A-14", "08.00 - 10.30")
-        )
-        _uiState.value = ScheduleUiState(schedules = scheduleList)
+    // Fungsi ini akan terus berjalan dan mendengarkan perubahan dari Flow
+    private fun observeSchedules() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            getSchedulesUseCase() // Panggil use case yang mengembalikan Flow
+                .catch { e -> // Tangani error jika terjadi pada Flow
+                    _uiState.update { it.copy(errorMessage = e.message, isLoading = false) }
+                }
+                .collect { scheduleList -> // Kumpulkan data dari Flow
+                    _uiState.update {
+                        it.copy(schedules = scheduleList, isLoading = false)
+                    }
+                }
+        }
     }
 
-    fun addSchedule() {
-        // Logika untuk menambah jadwal baru
-        println("Add schedule clicked")
+    fun onAddScheduleClicked() {
+        _uiState.update { it.copy(isDialogShown = true, editingSchedule = null) }
     }
 
-    fun editSchedule() {
-        // Logika untuk mengedit jadwal
-        println("Edit schedule clicked")
+    fun onEditScheduleClicked(item: ScheduleItem) {
+        _uiState.update { it.copy(isDialogShown = true, editingSchedule = item) }
     }
 
-    fun deleteSchedule() {
-        // Logika untuk menghapus jadwal
-        println("Delete schedule clicked")
+    fun onDialogDismiss() {
+        _uiState.update { it.copy(isDialogShown = false, editingSchedule = null) }
+    }
+
+    fun onSaveSchedule(title: String, pelaksana: String, ruang: String, tanggal: Long) {
+        viewModelScope.launch {
+            // Perbaikan: Tambahkan blok try-catch
+            try {
+                val scheduleToSave = _uiState.value.editingSchedule?.copy(
+                    id = _uiState.value.editingSchedule!!.id, // Pastikan ID lama ikut terbawa
+                    title = title,
+                    pelaksana = pelaksana,
+                    ruang = ruang,
+                    tanggalPelaksanaan = tanggal
+                ) ?: ScheduleItem(
+                    title = title,
+                    pelaksana = pelaksana,
+                    ruang = ruang,
+                    tanggalPelaksanaan = tanggal
+                )
+
+                if (_uiState.value.editingSchedule != null) {
+                    editScheduleUseCase(scheduleToSave) // Hapus komentar
+                } else {
+                    addScheduleUseCase(scheduleToSave) // Hapus komentar
+                }
+                onDialogDismiss()
+                // Tidak perlu memanggil loadSchedules() lagi, karena Flow akan update otomatis
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = e.message) }
+            }
+        }
+    }
+
+    fun deleteSchedule(schedule: ScheduleItem) { // <-- Menerima ScheduleItem dari UI
+        viewModelScope.launch {
+            try {
+                deleteScheduleUseCase(schedule) // <-- Mengirim ScheduleItem ke use case. Sudah benar.
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = e.message) }
+            }
+        }
     }
 }

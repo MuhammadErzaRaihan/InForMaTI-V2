@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.example.projecthmti.R
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.projecthmti.data.repository.FakeAuthRepository
 
 @Preview
 @Composable
@@ -44,7 +45,9 @@ fun LoginScreen(
     Succeed: () -> Unit = {},
     onRecovery: () -> Unit = {},
     onRegistClick: () -> Unit = {},
-    loginViewModel: LoginViewModel = viewModel()
+    loginViewModel: LoginViewModel = viewModel(
+        factory = LoginViewModelFactory(FakeAuthRepository())
+    )
 
 ) {
 
