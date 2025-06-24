@@ -78,16 +78,17 @@ fun UpcomingEventSection(
 
 @Composable
 fun UpcomingScheduleCard(schedule: ScheduleItem) {
-    // Ambil hanya jam dari timestamp
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     val timeString = timeFormatter.format(Date(schedule.tanggalPelaksanaan))
+    val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()) // Tambahkan ini
+    val dateString = dateFormatter.format(Date(schedule.tanggalPelaksanaan)) // Tambahkan ini
 
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
             .width(220.dp)
-            .height(100.dp)
+            .height(110.dp)
     ) {
         Row(
             modifier = Modifier
@@ -113,6 +114,12 @@ fun UpcomingScheduleCard(schedule: ScheduleItem) {
                     text = schedule.title,
                     color = Color(0xFF3FD0FF),
                     fontWeight = FontWeight.Bold,
+                    maxLines = 1
+                )
+                Text(
+                    text = dateString, // Menampilkan tanggal
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(4.dp))

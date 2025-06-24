@@ -30,7 +30,7 @@
     <string name="delete_schedule">Hapus Jadwal</string>
     <string name="executor">Pelaksana</string>
     <string name="room">Ruang</string>
-    <string name="time">Waktu Pelaksanaan</string>
+    <string name="time">Waktu</string>
     <string name="email">E-mail</string>
     <string name="out">Keluar</string>
     <string name="roles">HIRARKI</string>

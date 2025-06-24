@@ -7,5 +7,6 @@ data class User(
     val dob: Long,
     val gender: String,
     val email: String,
-    val password: String
+    val password: String,
+    val profilePictureUri: String? = null
 )

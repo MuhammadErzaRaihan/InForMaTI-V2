@@ -1,11 +1,14 @@
 package com.example.projecthmti.ui.theme.Screen.Login
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.projecthmti.domain.repository.AuthRepository
+import com.example.projecthmti.util.SessionManager // <-- TAMBAHKAN IMPORT INI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class LoginUiState(
     val username: String = "",
@@ -14,37 +17,37 @@ data class LoginUiState(
 
 class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
-    // _uiState bersifat private dan mutable, hanya bisa diubah di dalam ViewModel
     private val _uiState = MutableStateFlow(LoginUiState())
-
-    // uiState bersifat public dan read-only, untuk diobservasi oleh UI
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    // Fungsi untuk menangani event perubahan username dari UI
     fun onUsernameChange(username: String) {
-        _uiState.update { currentState ->
-            currentState.copy(username = username)
-        }
+        _uiState.update { it.copy(username = username) }
     }
 
-    // Fungsi untuk menangani event perubahan password dari UI
     fun onPasswordChange(password: String) {
-        _uiState.update { currentState ->
-            currentState.copy(password = password)
-        }
+        _uiState.update { it.copy(password = password) }
     }
 
-    // Fungsi untuk menangani event klik tombol login
-    fun onLoginClick() {
+    // Fungsi ini menangani klik tombol login
+    fun onLoginClick(onSuccess: (String) -> Unit, onError: (String) -> Unit) {
         val username = _uiState.value.username
         val password = _uiState.value.password
 
-        if (username.isNotBlank() && password.isNotBlank()) {
-            // Lakukan proses login (misalnya memanggil Repository)
-            println("Proses login dengan username: $username dan password: $password")
-            // Setelah berhasil, kirim event navigasi ke UI
-        } else {
-            println("Username dan password tidak boleh kosong")
+        if (username.isBlank() || password.isBlank()) {
+            onError("Username dan password tidak boleh kosong")
+            return
+        }
+
+        viewModelScope.launch {
+            val isLoggedIn = authRepository.login(username, password)
+            if (isLoggedIn) {
+                // Simpan email ke SessionManager agar bisa diakses layar lain
+                SessionManager.loggedInUserEmail = username
+                // Panggil callback sukses dan kirimkan emailnya
+                onSuccess(username)
+            } else {
+                onError("Username atau password salah")
+            }
         }
     }
 }

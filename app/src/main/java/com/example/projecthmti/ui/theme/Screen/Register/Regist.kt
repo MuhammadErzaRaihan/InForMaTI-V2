@@ -38,6 +38,7 @@ import com.example.projecthmti.R
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.ui.platform.LocalContext
 import com.example.projecthmti.data.local.db.AppDatabase
@@ -52,6 +53,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.ui.draw.alpha
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -170,22 +172,29 @@ fun RegistScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = formattedDate,
-                onValueChange = { },
-                label = { Text("Tanggal Lahir") },
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { datePickerDialog.show() }, // Tetap bisa diklik
-                shape = RoundedCornerShape(12.dp),
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.CalendarToday,
-                        contentDescription = "Pilih Tanggal"
-                    )
-                }
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = formattedDate,
+                    onValueChange = { },
+                    label = { Text("Tanggal Lahir") },
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.CalendarToday,
+                            contentDescription = "Pilih Tanggal"
+                        )
+                    }
+                )
+                // Menambahkan Box transparan di atasnya untuk menangani klik
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .alpha(0f) // Sepenuhnya transparan
+                        .clickable(onClick = { datePickerDialog.show() })
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             ExposedDropdownMenuBox(
