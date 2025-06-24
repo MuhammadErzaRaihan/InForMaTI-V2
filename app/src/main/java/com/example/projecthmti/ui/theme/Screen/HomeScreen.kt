@@ -10,20 +10,21 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.example.projecthmti.ui.theme.component.UpcomingEventSection
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.projecthmti.data.local.db.AppDatabase
+import com.example.projecthmti.domain.model.ScheduleItem // Ganti Event dengan ScheduleItem
 import com.example.projecthmti.ui.component.Header
 import com.example.projecthmti.ui.components.BottomNavBar
 import com.example.projecthmti.ui.theme.component.Announcement
 import com.example.projecthmti.ui.theme.component.MenuDivisiSection
 import com.example.projecthmti.ui.theme.component.ProfileSidebar
-import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.projecthmti.ui.theme.component.Event
+import com.example.projecthmti.ui.theme.component.UpcomingEventSection
 
 
 @Preview
@@ -32,12 +33,17 @@ fun HomeScreen(
     onLogout: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
-    onNavigateToSchedule: () -> Unit = {},
-    homeViewModel: HomeViewModel = viewModel()
-
+    onNavigateToSchedule: () -> Unit = {}
+    // HAPUS deklarasi homeViewModel dari parameter
 ) {
-    val uiState by homeViewModel.uiState.collectAsState()
+    // Inisialisasi ViewModel di dalam body, sama seperti ScheduleScreen
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val homeViewModel: HomeViewModel = viewModel(
+        factory = HomeViewModelFactory(db.scheduleDao())
+    )
 
+    val uiState by homeViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { Header(onProfileClick = { homeViewModel.showProfileSidebar() }) },
@@ -51,7 +57,8 @@ fun HomeScreen(
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             MainContent(
                 selectedIndex = uiState.selectedBottomNavIndex,
-                upcomingEvents = uiState.upcomingEvents, // Kirim data dari ViewModel
+                // PERBAIKAN: Kirim data jadwal yang benar dari uiState
+                upcomingSchedules = uiState.upcomingSchedules,
                 onNavigateToSchedule = onNavigateToSchedule
             )
 
@@ -78,7 +85,8 @@ fun HomeScreen(
 @Composable
 fun MainContent(
     selectedIndex: Int,
-    upcomingEvents: List<Event>,
+    // PERBAIKAN: Ganti parameter dari List<Event> menjadi List<ScheduleItem>
+    upcomingSchedules: List<ScheduleItem>,
     onNavigateToSchedule: () -> Unit
 ) {
     Column(
@@ -91,7 +99,8 @@ fun MainContent(
                 Announcement()
                 MenuDivisiSection()
                 UpcomingEventSection(
-                    events = upcomingEvents,
+                    // PERBAIKAN: Teruskan parameter yang benar
+                    schedules = upcomingSchedules,
                     onAddScheduleClick = onNavigateToSchedule
                 )
                 Spacer(modifier = Modifier.height(80.dp))
@@ -107,4 +116,3 @@ fun MainContent(
         }
     }
 }
-

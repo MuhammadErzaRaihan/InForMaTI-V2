@@ -1,37 +1,40 @@
 package com.example.projecthmti.ui.theme.Screen
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-
-import com.example.projecthmti.ui.theme.component.Event
+import androidx.lifecycle.viewModelScope
+import com.example.projecthmti.domain.model.ScheduleItem
+import com.example.projecthmti.domain.usecase.GetSchedulesUseCase
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 data class HomeUiState(
     val selectedBottomNavIndex: Int = 0,
     val isProfileSidebarVisible: Boolean = false,
-    val upcomingEvents: List<Event> = emptyList()
+    val upcomingSchedules: List<ScheduleItem> = emptyList()
 )
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel (
+    private val getSchedulesUseCase: GetSchedulesUseCase
+): ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        // Muat data yang dibutuhkan oleh HomeScreen
-        loadUpcomingEvents()
+        observeUpcomingSchedules()
     }
 
-    private fun loadUpcomingEvents() {
-        // Data ini idealnya datang dari sebuah Repository
-        val events = listOf(
-            Event("RAPAT PKKMB", "A-14", "13.00"),
-            Event("RAPAT LKD", "A-12", "13.00"),
-            Event("FUTSAL BARENG", "GOR BJM", "19.00")
-        )
-        _uiState.update { it.copy(upcomingEvents = events) }
+    private fun observeUpcomingSchedules() {
+        viewModelScope.launch {
+            getSchedulesUseCase()
+                .catch { e ->
+
+                    println("Error observing schedules: ${e.message}")
+                }
+                .collect { scheduleList ->
+                    _uiState.update { it.copy(upcomingSchedules = scheduleList.take(3)) }
+                }
+        }
     }
 
     fun onBottomNavIndexChange(newIndex: Int) {

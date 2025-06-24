@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
                     composable(AppRoute.REGIST) {
                         RegistScreen(
-                            onRegister = { navController.popBackStack() }, // Kembali ke login
+                            onRegisterSuccess = { navController.popBackStack() }, // Kembali ke login
                             onLogin = { navController.popBackStack() }
                         )
                     }

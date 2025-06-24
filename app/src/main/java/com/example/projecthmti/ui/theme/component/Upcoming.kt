@@ -1,16 +1,7 @@
 package com.example.projecthmti.ui.theme.component
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -18,29 +9,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
 import com.example.projecthmti.R
+import com.example.projecthmti.domain.model.ScheduleItem
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun UpcomingEventSection(
-    events: List<Event>,
+    schedules: List<ScheduleItem>,
     onAddScheduleClick: () -> Unit = {}
 ) {
-
-
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -63,17 +51,37 @@ fun UpcomingEventSection(
                 )
             }
         }
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(events) { event ->
-                EventCard(event)
+
+        // Cek jika daftar jadwal kosong
+        if (schedules.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Tidak ada jadwal kegiatan.",
+                    textAlign = TextAlign.Center,
+                    color = Color.Gray
+                )
+            }
+        } else {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(schedules) { schedule ->
+                    UpcomingScheduleCard(schedule)
+                }
             }
         }
     }
 }
 
-
 @Composable
-fun EventCard(event: Event) {
+fun UpcomingScheduleCard(schedule: ScheduleItem) {
+    // Ambil hanya jam dari timestamp
+    val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
+    val timeString = timeFormatter.format(Date(schedule.tanggalPelaksanaan))
+
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -95,16 +103,17 @@ fun EventCard(event: Event) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = event.time,
+                    text = timeString, // Tampilkan jam
                     color = Color(0xFF3FD0FF),
                     fontWeight = FontWeight.Bold
                 )
             }
             Column {
                 Text(
-                    text = event.title,
+                    text = schedule.title,
                     color = Color(0xFF3FD0FF),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -115,11 +124,11 @@ fun EventCard(event: Event) {
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = event.location, color = Color.Black)
+                    Text(text = schedule.ruang, color = Color.Black)
                 }
             }
         }
     }
 }
 
-data class Event(val title: String, val location: String, val time: String)
+// data class Event sudah tidak diperlukan lagi, bisa dihapus.

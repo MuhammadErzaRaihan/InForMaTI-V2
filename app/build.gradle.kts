@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.material3.android)
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,6 +72,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     val room_version = "2.6.1" // Anda bisa menggunakan versi terbaru
     implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version") // Dukungan untuk Coroutines dan Flow
-    ksp("androidx.room:room-compiler:$room_version") // Anotation processor untuk Room
+    implementation("androidx.room:room-ktx:$room_version")
+    implementation("androidx.room:room-migration:$room_version") // <-- TAMBAHKAN BARIS INI
+    ksp("androidx.room:room-compiler:$room_version")
+
+
 }

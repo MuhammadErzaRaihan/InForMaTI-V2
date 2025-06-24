@@ -1,5 +1,6 @@
 package com.example.projecthmti.ui.theme.Screen
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,28 +33,70 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.projecthmti.R
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.widget.Toast
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.platform.LocalContext
+import com.example.projecthmti.data.local.db.AppDatabase
+import com.example.projecthmti.data.repository.AuthRepositoryImpl
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewRegistScreen() {
-    RegistScreen(
-        onRegister = {},
-        onLogin = {}
-    )
-}
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistScreen(
-    onRegister: () -> Unit, // Diubah untuk simplicity, idealnya di-trigger dari state ViewModel
+    onRegisterSuccess: () -> Unit,
     onLogin: () -> Unit,
-    registViewModel: RegistViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+
+    val factory = remember {
+        val db = AppDatabase.getDatabase(context)
+        val authRepository = AuthRepositoryImpl(db.userDao())
+        RegistViewModelFactory(authRepository)
+    }
+
+    val registViewModel: RegistViewModel = viewModel(factory = factory)
     val uiState by registViewModel.uiState.collectAsState()
+
+
+
+    // Logic untuk Date Picker
+    val datePickerDialog = remember {
+        val calendar = Calendar.getInstance()
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                calendar.set(year, month, dayOfMonth)
+                registViewModel.onDobChange(calendar.timeInMillis)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+
+    val formattedDate = uiState.dob?.let {
+        SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(Date(it))
+    } ?: "Pilih Tanggal Lahir"
+
+
+    val genderOptions = listOf("Laki-Laki", "Perempuan")
+    var isGenderDropdownExpanded by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -129,23 +172,53 @@ fun RegistScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = uiState.dob,
-                onValueChange = registViewModel::onDobChange,
-                label = { Text("TTL (DD/MM/YYYY)") },
-                modifier = Modifier.fillMaxWidth(),
+                value = formattedDate,
+                onValueChange = { },
+                label = { Text("Tanggal Lahir") },
+                readOnly = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { datePickerDialog.show() }, // Tetap bisa diklik
                 shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = "Pilih Tanggal"
+                    )
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = uiState.gender,
-                onValueChange = registViewModel::onGenderChange,
-                label = { Text("Kelamin") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
-            )
+            ExposedDropdownMenuBox(
+                expanded = isGenderDropdownExpanded,
+                onExpandedChange = { isGenderDropdownExpanded = !isGenderDropdownExpanded }
+            ) {
+                OutlinedTextField(
+                    value = uiState.gender.ifEmpty { "Pilih Kelamin" },
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Kelamin") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isGenderDropdownExpanded) },
+                    modifier = Modifier
+                        .menuAnchor() // Ini penting untuk menghubungkan textfield dengan menu
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                )
+                ExposedDropdownMenu(
+                    expanded = isGenderDropdownExpanded,
+                    onDismissRequest = { isGenderDropdownExpanded = false }
+                ) {
+                    genderOptions.forEach { gender ->
+                        DropdownMenuItem(
+                            text = { Text(gender) },
+                            onClick = {
+                                registViewModel.onGenderChange(gender) // Update ViewModel
+                                isGenderDropdownExpanded = false // Tutup menu
+                            }
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
@@ -170,7 +243,14 @@ fun RegistScreen(
 
             Button(
                 onClick = {
-                    registViewModel.onRegisterClick()
+                    registViewModel.onRegisterClick(
+                        onSuccess = {   Toast.makeText(context, "Registrasi Berhasil!", Toast.LENGTH_SHORT).show()
+                            onRegisterSuccess()
+                                    },
+                        onError = { errorMsg ->
+                            Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF00C5FD),

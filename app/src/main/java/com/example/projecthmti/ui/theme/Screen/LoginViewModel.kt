@@ -1,7 +1,7 @@
 package com.example.projecthmti.ui.theme.Screen
 
 import androidx.lifecycle.ViewModel
-import com.example.projecthmti.data.repository.AuthRepository
+import com.example.projecthmti.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
