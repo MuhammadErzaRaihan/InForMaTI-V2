@@ -11,6 +11,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.projecthmti.ui.theme.ProjectHMTITheme
 import com.example.projecthmti.ui.theme.Screen.*
+import com.example.projecthmti.ui.theme.Screen.Home.HomeScreen
+import com.example.projecthmti.ui.theme.Screen.Login.LoginScreen
+import com.example.projecthmti.ui.theme.Screen.Profile.ProfileDetailScreen
+import com.example.projecthmti.ui.theme.Screen.Recovery.RecoveryScreen
+import com.example.projecthmti.ui.theme.Screen.Register.RegistScreen
+import com.example.projecthmti.ui.theme.Screen.Schedule.ScheduleScreen
 import com.example.projecthmti.ui.theme.Setting.SettingScreen
 import com.example.projecthmti.ui.theme.Setting.SettingsViewModel
 

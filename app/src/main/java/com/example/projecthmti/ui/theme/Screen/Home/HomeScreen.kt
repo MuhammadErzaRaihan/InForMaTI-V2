@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen
+package com.example.projecthmti.ui.theme.Screen.Home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +21,8 @@ import com.example.projecthmti.data.local.db.AppDatabase
 import com.example.projecthmti.domain.model.ScheduleItem // Ganti Event dengan ScheduleItem
 import com.example.projecthmti.ui.component.Header
 import com.example.projecthmti.ui.components.BottomNavBar
+import com.example.projecthmti.ui.theme.Screen.NotifScreen
+import com.example.projecthmti.ui.theme.Screen.OnlineMemberList
 import com.example.projecthmti.ui.theme.component.Announcement
 import com.example.projecthmti.ui.theme.component.MenuDivisiSection
 import com.example.projecthmti.ui.theme.component.ProfileSidebar

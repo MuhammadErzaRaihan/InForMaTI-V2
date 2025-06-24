@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen
+package com.example.projecthmti.ui.theme.Screen.Recovery
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

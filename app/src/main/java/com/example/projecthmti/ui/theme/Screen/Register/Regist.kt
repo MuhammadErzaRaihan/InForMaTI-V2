@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen
+package com.example.projecthmti.ui.theme.Screen.Register
 
 import android.app.DatePickerDialog
 import androidx.compose.foundation.Image
@@ -39,7 +39,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.platform.LocalContext
 import com.example.projecthmti.data.local.db.AppDatabase
 import com.example.projecthmti.data.repository.AuthRepositoryImpl

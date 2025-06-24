@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen
+package com.example.projecthmti.ui.theme.Screen.Schedule
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog

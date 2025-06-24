@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen
+package com.example.projecthmti.ui.theme.Screen.Home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

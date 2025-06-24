@@ -1,8 +1,7 @@
-package com.example.projecthmti.ui.theme.Screen
+package com.example.projecthmti.ui.theme.Screen.Login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.projecthmti.data.repository.FakeAuthRepository
 import com.example.projecthmti.domain.repository.AuthRepository
 
 class LoginViewModelFactory(private val authRepository: AuthRepository) : ViewModelProvider.Factory {
