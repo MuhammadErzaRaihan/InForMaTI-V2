@@ -18,24 +18,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.projecthmti.R
 
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel,
-    onLoginSuccess: (String) -> Unit, // <-- PERBAIKI TIPE PARAMETER INI
+    onLoginSuccess: (String) -> Unit,
     onLoginFailed: (String) -> Unit,
     onRecovery: () -> Unit,
-    onRegistClick: () -> Unit
+    onRegistClick: () -> Unit,
 ) {
-
     val loginUiState by loginViewModel.uiState.collectAsState()
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 32.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
@@ -52,19 +53,22 @@ fun LoginScreen(
         Text(
             text = "InForMaTi",
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text = "By HMTI ",
+            text = "By HMTI",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 22.dp)
+            modifier = Modifier.padding(bottom = 22.dp),
+            color = MaterialTheme.colorScheme.onBackground
         )
         Text(
             text = "Connect, Collab, Create",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(bottom = 12.dp),
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.height(22.dp))
@@ -72,7 +76,7 @@ fun LoginScreen(
         OutlinedTextField(
             value = loginUiState.username,
             onValueChange = { loginViewModel.onUsernameChange(it) },
-            label = { Text("Username...") },
+            label = { Text("Email...") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             singleLine = true
@@ -94,7 +98,6 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                // Panggilan ini sekarang akan cocok karena tipenya sudah sama
                 loginViewModel.onLoginClick(
                     onSuccess = onLoginSuccess,
                     onError = onLoginFailed

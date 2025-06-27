@@ -1,8 +1,7 @@
 package com.example.projecthmti.ui.theme.Setting
 
-import android.content.res.Configuration
+import android.app.Activity
 import androidx.compose.foundation.clickable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -18,74 +17,52 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.projecthmti.R
-import java.util.Locale
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
-
-data class AppSettings(
-    val isDarkMode: Boolean = false,
-    val isIndonesianLanguage: Boolean = true
-)
-
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun SettingScreenPreview() {
-    MaterialTheme {
-        SettingScreen(
-            onBackClick = {},
-
-        )
-    }
-}
-
-
+import com.example.projecthmti.R
+import com.example.projecthmti.data.repository.SettingsRepository
 
 @Composable
 fun SettingScreen(
     onBackClick: () -> Unit,
-    settingsViewModel: SettingsViewModel = viewModel()
-
-
 ) {
-    val uiState by settingsViewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val settingsRepository = remember { SettingsRepository(context) }
+    val settingsViewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(settingsRepository)
+    )
 
-    fun changeLanguage(lang: String) {
-        val locale = Locale(lang)
-        Locale.setDefault(locale)
-        val config = Configuration()
-        config.setLocale(locale)
-        context.resources.updateConfiguration(config, context.resources.displayMetrics)
-    }
+    // Observasi uiState tunggal dari ViewModel
+    val uiState by settingsViewModel.uiState.collectAsState()
+
+    // Dapatkan referensi ke Activity saat ini untuk memanggil recreate()
+    val activity = LocalContext.current as? Activity
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // back
         IconButton(onClick = { onBackClick() }) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         // Ganti Bahasa
         SettingItem(
             title = stringResource(R.string.language),
-            value = if (uiState.isIndonesianLanguage) stringResource(R.string.indonesian)
-            else stringResource(R.string.english),
+            value = if (uiState.isIndonesianLanguage) stringResource(R.string.indonesian) else stringResource(R.string.english),
             icon = Icons.Default.Language,
             onClick = {
                 val newLangIsIndonesian = !uiState.isIndonesianLanguage
                 settingsViewModel.onLanguageChanged(newLangIsIndonesian)
-                changeLanguage(if (newLangIsIndonesian) "in" else "en")
+                // --- KUNCI PERBAIKAN ---
+                // Memicu restart Activity untuk menerapkan perubahan bahasa
+                activity?.recreate()
             }
         )
 
-        //  dark mode
+        //  Dark Mode
         SettingItem(
             title = stringResource(R.string.theme),
             icon = Icons.Default.DarkMode,
@@ -93,9 +70,11 @@ fun SettingScreen(
             toggleState = uiState.isDarkMode,
             onToggleChange = { isChecked ->
                 settingsViewModel.onThemeChanged(isChecked)
+                // --- KUNCI PERBAIKAN ---
+                // Memicu restart Activity untuk menerapkan perubahan tema juga
+                activity?.recreate()
             }
         )
-
     }
 }
 
@@ -131,7 +110,6 @@ fun SettingItem(
                 fontWeight = FontWeight.Medium)
         }
 
-
         if (isToggleable && onToggleChange != null) {
             Switch(
                 checked = toggleState,
@@ -142,4 +120,3 @@ fun SettingItem(
         }
     }
 }
-

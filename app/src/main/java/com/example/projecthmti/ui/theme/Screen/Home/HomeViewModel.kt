@@ -10,12 +10,14 @@ import kotlinx.coroutines.launch
 data class HomeUiState(
     val selectedBottomNavIndex: Int = 0,
     val isProfileSidebarVisible: Boolean = false,
-    val upcomingSchedules: List<ScheduleItem> = emptyList()
+    val upcomingSchedules: List<ScheduleItem> = emptyList(),
+    val selectedScheduleDetail: ScheduleItem? = null,
+    val showLogoutDialog: Boolean = false // <-- STATE BARU UNTUK DIALOG
 )
 
-class HomeViewModel (
+class HomeViewModel(
     private val getSchedulesUseCase: GetSchedulesUseCase
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -28,7 +30,6 @@ class HomeViewModel (
         viewModelScope.launch {
             getSchedulesUseCase()
                 .catch { e ->
-
                     println("Error observing schedules: ${e.message}")
                 }
                 .collect { scheduleList ->
@@ -47,5 +48,22 @@ class HomeViewModel (
 
     fun dismissProfileSidebar() {
         _uiState.update { it.copy(isProfileSidebarVisible = false) }
+    }
+
+    fun onScheduleCardClicked(schedule: ScheduleItem) {
+        _uiState.update { it.copy(selectedScheduleDetail = schedule) }
+    }
+
+    fun onScheduleDetailDismiss() {
+        _uiState.update { it.copy(selectedScheduleDetail = null) }
+    }
+
+    // --- FUNGSI BARU UNTUK LOGOUT ---
+    fun onLogoutClicked() {
+        _uiState.update { it.copy(showLogoutDialog = true) }
+    }
+
+    fun onLogoutDialogDismiss() {
+        _uiState.update { it.copy(showLogoutDialog = false) }
     }
 }

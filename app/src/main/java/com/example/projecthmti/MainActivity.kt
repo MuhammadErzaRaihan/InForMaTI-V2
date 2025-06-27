@@ -1,11 +1,14 @@
 package com.example.projecthmti
 
+import android.content.Context
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -13,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.projecthmti.data.local.db.AppDatabase
 import com.example.projecthmti.data.repository.AuthRepositoryImpl
+import com.example.projecthmti.data.repository.SettingsRepository
 import com.example.projecthmti.ui.theme.ProjectHMTITheme
 import com.example.projecthmti.ui.theme.Screen.Home.HomeScreen
 import com.example.projecthmti.ui.theme.Screen.Login.LoginScreen
@@ -22,33 +26,68 @@ import com.example.projecthmti.ui.theme.Screen.Recovery.RecoveryScreen
 import com.example.projecthmti.ui.theme.Screen.Register.RegistScreen
 import com.example.projecthmti.ui.theme.Screen.Schedule.ScheduleScreen
 import com.example.projecthmti.ui.theme.Screen.SplashScreen
-// --- PERBAIKAN IMPORT DI BAWAH INI ---
+import com.example.projecthmti.ui.theme.Setting.SettingScreen
+import com.example.projecthmti.ui.theme.Setting.SettingsViewModel
+import com.example.projecthmti.ui.theme.Setting.SettingsViewModelFactory
 import com.example.projecthmti.ui.theme.screen.profile.ProfileDetailScreen
 import com.example.projecthmti.ui.theme.screen.profile.ProfileViewModel
 import com.example.projecthmti.ui.theme.screen.profile.ProfileViewModelFactory
-// --- SAMPAI SINI ---
-import com.example.projecthmti.ui.theme.Setting.SettingScreen
-import com.example.projecthmti.ui.theme.Setting.SettingsViewModel
 import com.example.projecthmti.util.SessionManager
+import java.util.*
 
 class MainActivity : ComponentActivity() {
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (!isGranted) {
+                Toast.makeText(this, "Notifikasi tidak akan muncul tanpa izin.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private fun setLocale(context: Context, lang: String) {
+        val currentLocale = context.resources.configuration.locales.get(0)
+        if (currentLocale.language != lang) {
+            val locale = Locale(lang)
+            Locale.setDefault(locale)
+            val config = Configuration(context.resources.configuration)
+            config.setLocale(locale)
+            context.createConfigurationContext(config)
+            context.resources.updateConfiguration(config, context.resources.displayMetrics)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            val settingsViewModel: SettingsViewModel = viewModel()
-            val settingsState by settingsViewModel.uiState.collectAsState()
+        askNotificationPermission()
 
-            ProjectHMTITheme(darkTheme = settingsState.isDarkMode) {
+        setContent {
+            val context = LocalContext.current
+            val settingsRepository = remember { SettingsRepository(context) }
+            val settingsViewModel: SettingsViewModel = viewModel(
+                factory = SettingsViewModelFactory(settingsRepository)
+            )
+
+            // Observasi uiState tunggal
+            val uiState by settingsViewModel.uiState.collectAsState()
+
+            // Terapkan lokal bahasa saat komposisi ulang
+            setLocale(context, if (uiState.isIndonesianLanguage) "in" else "en")
+
+            // Terapkan tema
+            ProjectHMTITheme(darkTheme = uiState.isDarkMode) {
                 val navController = rememberNavController()
-                val context = LocalContext.current
                 val db = AppDatabase.getDatabase(context)
 
                 NavHost(
                     navController = navController,
                     startDestination = AppRoute.SPLASH
                 ) {
-                    // ... (composable lainnya tidak berubah) ...
                     composable(AppRoute.SPLASH) {
                         SplashScreen {
                             navController.navigate(AppRoute.LOGIN) {

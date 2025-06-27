@@ -91,7 +91,7 @@ fun ScheduleScreen(
                         ScheduleCard(
                             item = schedule,
                             onEditClick = { scheduleViewModel.onEditScheduleClicked(schedule) },
-                            onDeleteClick = { scheduleViewModel.deleteSchedule(schedule) }
+                            onDeleteClick = { scheduleViewModel.deleteSchedule(schedule, context) }
                         )
                     }
                 }
@@ -104,7 +104,7 @@ fun ScheduleScreen(
             schedule = uiState.editingSchedule,
             onDismiss = { scheduleViewModel.onDialogDismiss() },
             onSave = { title, pelaksana, ruang, tanggal ->
-                scheduleViewModel.onSaveSchedule(title, pelaksana, ruang, tanggal)
+                scheduleViewModel.onSaveSchedule(title, pelaksana, ruang, tanggal, context)
             }
         )
     }
@@ -116,8 +116,11 @@ fun ScheduleCard(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    // --- KUNCI PERBAIKAN ADA DI SINI ---
+    // Mengganti "Yelp" dengan "yyyy" yang merupakan pola format tahun yang benar.
     val formattedDate = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale.getDefault())
         .format(Date(item.tanggalPelaksanaan))
+    // --- SAMPAI SINI ---
 
     Card(
         shape = RoundedCornerShape(12.dp),

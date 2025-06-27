@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.projecthmti.data.local.db.entity.UserEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -17,4 +18,7 @@ interface UserDao {
 
     @Update
     suspend fun updateUser(user: UserEntity)
+
+    @Query("SELECT * FROM users ORDER BY name ASC")
+    fun getAllUsers(): Flow<List<UserEntity>>
 }

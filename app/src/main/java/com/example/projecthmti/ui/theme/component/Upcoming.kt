@@ -1,6 +1,7 @@
 package com.example.projecthmti.ui.theme.component
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -14,11 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
 import com.example.projecthmti.R
 import com.example.projecthmti.domain.model.ScheduleItem
 import java.text.SimpleDateFormat
@@ -27,7 +28,8 @@ import java.util.*
 @Composable
 fun UpcomingEventSection(
     schedules: List<ScheduleItem>,
-    onAddScheduleClick: () -> Unit = {}
+    onAddScheduleClick: () -> Unit = {},
+    onScheduleClick: (ScheduleItem) -> Unit // <-- PARAMETER BARU
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
@@ -52,7 +54,6 @@ fun UpcomingEventSection(
             }
         }
 
-        // Cek jika daftar jadwal kosong
         if (schedules.isEmpty()) {
             Box(
                 modifier = Modifier
@@ -69,7 +70,11 @@ fun UpcomingEventSection(
         } else {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(schedules) { schedule ->
-                    UpcomingScheduleCard(schedule)
+                    // Teruskan event klik ke UpcomingScheduleCard
+                    UpcomingScheduleCard(
+                        schedule = schedule,
+                        onClick = { onScheduleClick(schedule) }
+                    )
                 }
             }
         }
@@ -77,11 +82,14 @@ fun UpcomingEventSection(
 }
 
 @Composable
-fun UpcomingScheduleCard(schedule: ScheduleItem) {
+fun UpcomingScheduleCard(
+    schedule: ScheduleItem,
+    onClick: () -> Unit // <-- PARAMETER BARU
+) {
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     val timeString = timeFormatter.format(Date(schedule.tanggalPelaksanaan))
-    val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()) // Tambahkan ini
-    val dateString = dateFormatter.format(Date(schedule.tanggalPelaksanaan)) // Tambahkan ini
+    val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+    val dateString = dateFormatter.format(Date(schedule.tanggalPelaksanaan))
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -89,6 +97,7 @@ fun UpcomingScheduleCard(schedule: ScheduleItem) {
         modifier = Modifier
             .width(220.dp)
             .height(110.dp)
+            .clickable(onClick = onClick) // <-- BUAT KARTU BISA DIKLIK
     ) {
         Row(
             modifier = Modifier
@@ -104,7 +113,7 @@ fun UpcomingScheduleCard(schedule: ScheduleItem) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = timeString, // Tampilkan jam
+                    text = timeString,
                     color = Color(0xFF3FD0FF),
                     fontWeight = FontWeight.Bold
                 )
@@ -116,13 +125,13 @@ fun UpcomingScheduleCard(schedule: ScheduleItem) {
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = dateString, // Menampilkan tanggal
+                    text = dateString,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray,
                     maxLines = 1
                 )
-                Spacer(modifier = Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Place,
@@ -137,5 +146,3 @@ fun UpcomingScheduleCard(schedule: ScheduleItem) {
         }
     }
 }
-
-// data class Event sudah tidak diperlukan lagi, bisa dihapus.

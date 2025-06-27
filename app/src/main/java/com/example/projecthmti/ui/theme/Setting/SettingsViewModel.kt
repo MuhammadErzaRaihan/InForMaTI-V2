@@ -1,35 +1,38 @@
 package com.example.projecthmti.ui.theme.Setting
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.lifecycle.viewModelScope
+import com.example.projecthmti.data.repository.SettingsRepository
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
-// Menggunakan AppSettings sebagai UI State
-// data class AppSettings(
-//     val isDarkMode: Boolean = false,
-//     val isIndonesianLanguage: Boolean = true
-// )
+// Data class untuk menampung semua state pengaturan
+data class AppSettings(
+    val isDarkMode: Boolean = false,
+    val isIndonesianLanguage: Boolean = true
+)
 
-class SettingsViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(AppSettings())
-    val uiState: StateFlow<AppSettings> = _uiState.asStateFlow()
+class SettingsViewModel(private val settingsRepository: SettingsRepository) : ViewModel() {
 
-    init {
-        // Di sini logika untuk memuat pengaturan yang tersimpan dari Repository
-        // Contoh: _uiState.value = settingsRepository.loadSettings()
-    }
+    // Gabungkan kedua StateFlow dari repository menjadi satu StateFlow<AppSettings>
+    val uiState: StateFlow<AppSettings> = combine(
+        settingsRepository.isDarkMode,
+        settingsRepository.isIndonesianLanguage
+    ) { isDark, isIndonesian ->
+        AppSettings(isDarkMode = isDark, isIndonesianLanguage = isIndonesian)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = AppSettings() // Nilai awal default
+    )
 
     fun onThemeChanged(isDarkMode: Boolean) {
-        _uiState.update { it.copy(isDarkMode = isDarkMode) }
-        // Di sini logika untuk menyimpan pengaturan tema ke Repository
-        // Contoh: settingsRepository.saveTheme(isDarkMode)
+        settingsRepository.setDarkMode(isDarkMode)
     }
 
     fun onLanguageChanged(isIndonesian: Boolean) {
-        _uiState.update { it.copy(isIndonesianLanguage = isIndonesian) }
-        // Di sini logika untuk menyimpan pengaturan bahasa ke Repository
-        // Contoh: settingsRepository.saveLanguage(isIndonesian)
+        settingsRepository.setLanguage(isIndonesian)
     }
 }

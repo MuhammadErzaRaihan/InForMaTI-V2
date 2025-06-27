@@ -34,19 +34,17 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
         val password = _uiState.value.password
 
         if (username.isBlank() || password.isBlank()) {
-            onError("Username dan password tidak boleh kosong")
+            onError("Email dan password tidak boleh kosong")
             return
         }
 
         viewModelScope.launch {
             val isLoggedIn = authRepository.login(username, password)
             if (isLoggedIn) {
-                // Simpan email ke SessionManager agar bisa diakses layar lain
                 SessionManager.loggedInUserEmail = username
-                // Panggil callback sukses dan kirimkan emailnya
                 onSuccess(username)
             } else {
-                onError("Username atau password salah")
+                onError("Email atau password salah")
             }
         }
     }

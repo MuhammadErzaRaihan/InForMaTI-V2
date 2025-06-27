@@ -3,6 +3,7 @@ package com.example.projecthmti.data.local.db
 import android.content.Context
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.projecthmti.data.local.db.dao.NotificationDao
 import com.example.projecthmti.data.local.db.dao.ScheduleDao
 import com.example.projecthmti.data.local.db.dao.UserDao
 import com.example.projecthmti.data.local.db.entity.ScheduleEntity
@@ -10,20 +11,23 @@ import com.example.projecthmti.data.local.db.entity.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.example.projecthmti.data.local.db.entity.NotificationEntity
 
 @Database(
-    entities = [ScheduleEntity::class, UserEntity::class],
-    version = 3,
+    entities = [ScheduleEntity::class, UserEntity::class, NotificationEntity::class],
+    version = 4,
     exportSchema = true,
     autoMigrations = [
         AutoMigration (from = 1, to = 2),
-        AutoMigration (from = 2, to = 3)
+        AutoMigration (from = 2, to = 3),
+        AutoMigration (from = 3, to = 4)
     ]
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun scheduleDao(): ScheduleDao
     abstract fun userDao(): UserDao
+    abstract fun notificationDao(): NotificationDao
 
     companion object {
         @Volatile

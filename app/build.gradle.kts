@@ -23,7 +23,13 @@ android {
         }
 
     }
-
+    splits {
+        abi {
+            // Menonaktifkan pembuatan APK terpisah untuk setiap arsitektur CPU
+            // pada build 'debug'. Ini akan menghasilkan satu APK universal.
+            isEnable = false
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -76,6 +82,7 @@ dependencies {
     implementation("androidx.room:room-migration:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
 
 }

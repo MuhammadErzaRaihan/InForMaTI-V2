@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
@@ -21,18 +22,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 
 @Composable
 fun BottomNavBar(
     selectedIndex: Int,
-    onItemSelected: (Int) -> Unit
+    onItemSelected: (Int) -> Unit,
+    onLogoutClick: () -> Unit // <-- PARAMETER BARU
 ) {
     val items = listOf(
         Icons.Default.Home,           // index 0
         Icons.Default.Group,          // index 1
         null,                         // index 2 (FloatingActionButton)
-        Icons.Default.Notifications, // index 3 → NOTIFIKASI
+        Icons.Default.Notifications,  // index 3
         Icons.AutoMirrored.Filled.ExitToApp // index 4
     )
 
@@ -44,14 +45,22 @@ fun BottomNavBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp),
-
-            ) {
+        ) {
             items.forEachIndexed { index, icon ->
                 if (index == 2) {
-                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f)) // Spacer untuk FAB
                 } else {
                     IconButton(
-                        onClick = { onItemSelected(index) },
+                        onClick = {
+                            // --- KUNCI PERUBAHAN ---
+                            // Jika ikon adalah 'ExitToApp', panggil onLogoutClick.
+                            // Jika tidak, lakukan seperti biasa.
+                            if (index == 4) {
+                                onLogoutClick()
+                            } else {
+                                onItemSelected(index)
+                            }
+                        },
                         modifier = Modifier.weight(1f)
                     ) {
                         Icon(
@@ -77,4 +86,3 @@ fun BottomNavBar(
         }
     }
 }
-

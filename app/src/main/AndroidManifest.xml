@@ -2,11 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- 1. Deklarasikan bahwa aplikasi mungkin menggunakan fitur kamera -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-    <!-- 2. Minta izin untuk menggunakan kamera -->
     <uses-permission android:name="android.permission.CAMERA" />
 
 
@@ -31,7 +30,6 @@
             </intent-filter>
         </activity>
 
-        <!-- 3. Pastikan FileProvider sudah dikonfigurasi dengan benar -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
