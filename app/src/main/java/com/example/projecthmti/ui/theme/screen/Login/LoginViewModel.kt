@@ -3,7 +3,7 @@ package com.example.projecthmti.ui.theme.screen.Login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.projecthmti.domain.repository.AuthRepository
-import com.example.projecthmti.util.SessionManager // <-- TAMBAHKAN IMPORT INI
+import com.example.projecthmti.util.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +28,6 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
         _uiState.update { it.copy(password = password) }
     }
 
-    // Fungsi ini menangani klik tombol login
     fun onLoginClick(onSuccess: (String) -> Unit, onError: (String) -> Unit) {
         val username = _uiState.value.username
         val password = _uiState.value.password

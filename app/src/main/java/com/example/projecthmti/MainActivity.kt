@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
             // Observasi uiState tunggal
             val uiState by settingsViewModel.uiState.collectAsState()
 
-            // Terapkan lokal bahasa saat komposisi ulang
+            // Terapkan lokalisasi bahasa saat komposisi ulang
             setLocale(context, if (uiState.isIndonesianLanguage) "in" else "en")
 
             // Terapkan tema

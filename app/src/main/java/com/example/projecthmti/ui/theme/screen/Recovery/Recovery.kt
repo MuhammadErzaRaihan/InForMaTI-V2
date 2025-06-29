@@ -57,16 +57,16 @@ fun RecoveryScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
-                value = uiState.email, // Ambil dari state ViewModel
-                onValueChange = { recoveryViewModel.onEmailChange(it) }, // Panggil fungsi ViewModel
+                value = uiState.email,
+                onValueChange = { recoveryViewModel.onEmailChange(it) },
                 label = { Text("Email...") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
-                value = uiState.oldPassword, // Ambil dari state ViewModel
-                onValueChange = { recoveryViewModel.onPasswordChange(it) }, // Panggil fungsi ViewModel
+                value = uiState.oldPassword,
+                onValueChange = { recoveryViewModel.onPasswordChange(it) },
                 label = { Text("Old Password...") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -76,7 +76,7 @@ fun RecoveryScreen(
             Button(
                 onClick = {
                     recoveryViewModel.onRecoverySubmit()
-                    onRecoverySubmitted() // Trigger navigasi kembali
+                    onRecoverySubmitted()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

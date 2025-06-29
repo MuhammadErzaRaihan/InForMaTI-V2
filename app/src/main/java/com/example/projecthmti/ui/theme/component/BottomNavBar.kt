@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 fun BottomNavBar(
     selectedIndex: Int,
     onItemSelected: (Int) -> Unit,
-    onLogoutClick: () -> Unit // <-- PARAMETER BARU
+    onLogoutClick: () -> Unit
 ) {
     val items = listOf(
         Icons.Default.Home,           // index 0
@@ -48,13 +48,11 @@ fun BottomNavBar(
         ) {
             items.forEachIndexed { index, icon ->
                 if (index == 2) {
-                    Spacer(modifier = Modifier.weight(1f)) // Spacer untuk FAB
+                    Spacer(modifier = Modifier.weight(1f))
                 } else {
                     IconButton(
                         onClick = {
-                            // --- KUNCI PERUBAHAN ---
-                            // Jika ikon adalah 'ExitToApp', panggil onLogoutClick.
-                            // Jika tidak, lakukan seperti biasa.
+
                             if (index == 4) {
                                 onLogoutClick()
                             } else {

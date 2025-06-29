@@ -2,7 +2,6 @@ package com.example.projecthmti.data.local.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-// ... imports
 import com.example.projecthmti.domain.model.ScheduleItem
 
 @Entity(tableName = "schedules")
@@ -12,10 +11,9 @@ data class ScheduleEntity(
     val title: String,
     val pelaksana: String,
     val ruang: String,
-    val tanggalPelaksanaan: Long // Tambahkan field ini
+    val tanggalPelaksanaan: Long
 )
 
-// Ubah fungsi mapper
 fun ScheduleEntity.toDomainModel(): ScheduleItem {
     return ScheduleItem(
         id = this.id,

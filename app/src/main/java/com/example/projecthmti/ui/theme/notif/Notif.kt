@@ -75,14 +75,12 @@ fun NotifScreen() {
                 }
             }
         } else {
-            // --- PERUBAHAN UTAMA DI SINI ---
             items(
                 items = notifications,
-                key = { notification -> notification.id } // Kunci stabil untuk animasi
+                key = { notification -> notification.id }
             ) { notification ->
                 val dismissState = rememberSwipeToDismissBoxState(
                     confirmValueChange = {
-                        // Hanya konfirmasi jika geser ke kiri (EndToStart)
                         if (it == SwipeToDismissBoxValue.EndToStart) {
                             notifViewModel.deleteNotification(notification)
                             true
@@ -94,10 +92,8 @@ fun NotifScreen() {
 
                 SwipeToDismissBox(
                     state = dismissState,
-                    // Hanya izinkan geser dari kanan ke kiri
                     enableDismissFromStartToEnd = false,
                     backgroundContent = {
-                        // Latar belakang yang muncul saat item digeser
                         val color = when (dismissState.targetValue) {
                             SwipeToDismissBoxValue.EndToStart -> Color.Red.copy(alpha = 0.8f)
                             else -> Color.Transparent
@@ -117,7 +113,6 @@ fun NotifScreen() {
                         }
                     }
                 ) {
-                    // Konten asli (item notifikasi)
                     NotificationItem(notification)
                 }
             }

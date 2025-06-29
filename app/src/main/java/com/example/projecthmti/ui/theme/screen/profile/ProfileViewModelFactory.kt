@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.screen.profile // <-- PERBAIKAN NAMA PAKET
+package com.example.projecthmti.ui.theme.screen.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +10,6 @@ class ProfileViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        // Karena semua file sekarang ada di paket yang benar, referensi ini akan ditemukan.
         if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
             val email = SessionManager.loggedInUserEmail
                 ?: throw IllegalStateException("Email pengguna tidak ditemukan di sesi. Pastikan login berhasil.")

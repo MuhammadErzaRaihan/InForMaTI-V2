@@ -203,11 +203,8 @@ fun ProfileDetailScreen(
 }
 
 private fun createImageUri(context: Context): Uri {
-    // --- KUNCI PERBAIKAN ---
-    // Gunakan direktori yang diizinkan oleh FileProvider (externalCacheDir)
     val cacheDir = context.externalCacheDir ?: context.cacheDir
     val file = File(cacheDir, "camera_photo_${System.currentTimeMillis()}.jpg")
-    // ----------------------
 
     return FileProvider.getUriForFile(
         context,

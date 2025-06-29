@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.screen.profile // <-- PERUBAHAN NAMA PAKET
+package com.example.projecthmti.ui.theme.screen.profile
 
 import android.content.Context
 import android.content.Intent

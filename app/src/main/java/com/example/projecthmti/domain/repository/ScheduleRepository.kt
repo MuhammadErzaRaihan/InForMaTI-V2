@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface ScheduleRepository {
     fun getSchedules(): Flow<List<ScheduleItem>>
     suspend fun addSchedule(schedule: ScheduleItem)
-    suspend fun editSchedule(schedule: ScheduleItem) // <-- Pastikan baris ini ada
+    suspend fun editSchedule(schedule: ScheduleItem)
     suspend fun deleteSchedule(schedule: ScheduleItem)
 }

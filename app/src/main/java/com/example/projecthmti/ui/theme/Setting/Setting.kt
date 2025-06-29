@@ -31,10 +31,8 @@ fun SettingScreen(
         factory = SettingsViewModelFactory(settingsRepository)
     )
 
-    // Observasi uiState tunggal dari ViewModel
     val uiState by settingsViewModel.uiState.collectAsState()
 
-    // Dapatkan referensi ke Activity saat ini untuk memanggil recreate()
     val activity = LocalContext.current as? Activity
 
     Column(
@@ -56,8 +54,7 @@ fun SettingScreen(
             onClick = {
                 val newLangIsIndonesian = !uiState.isIndonesianLanguage
                 settingsViewModel.onLanguageChanged(newLangIsIndonesian)
-                // --- KUNCI PERBAIKAN ---
-                // Memicu restart Activity untuk menerapkan perubahan bahasa
+
                 activity?.recreate()
             }
         )
@@ -70,8 +67,7 @@ fun SettingScreen(
             toggleState = uiState.isDarkMode,
             onToggleChange = { isChecked ->
                 settingsViewModel.onThemeChanged(isChecked)
-                // --- KUNCI PERBAIKAN ---
-                // Memicu restart Activity untuk menerapkan perubahan tema juga
+
                 activity?.recreate()
             }
         )

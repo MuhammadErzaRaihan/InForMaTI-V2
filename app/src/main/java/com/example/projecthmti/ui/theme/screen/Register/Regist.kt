@@ -103,12 +103,11 @@ fun RegistScreen(
             }
         }
 
-        // --- KUNCI PERBAIKAN ---
-        // Ganti Color.White dengan warna dari tema
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background) // Menggunakan warna dari tema
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 32.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

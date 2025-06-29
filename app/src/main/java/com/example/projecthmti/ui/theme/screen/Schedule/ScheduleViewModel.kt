@@ -116,7 +116,6 @@ class ScheduleViewModel(
                 .setInputData(data30Min)
                 .build()
 
-            // Nama unik untuk pekerjaan ini
             workManager.enqueueUniqueWork(
                 "reminder_30min_${schedule.id}",
                 ExistingWorkPolicy.REPLACE,

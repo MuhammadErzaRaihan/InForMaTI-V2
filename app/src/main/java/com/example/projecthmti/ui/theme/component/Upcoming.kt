@@ -29,7 +29,7 @@ import java.util.*
 fun UpcomingEventSection(
     schedules: List<ScheduleItem>,
     onAddScheduleClick: () -> Unit = {},
-    onScheduleClick: (ScheduleItem) -> Unit // <-- PARAMETER BARU
+    onScheduleClick: (ScheduleItem) -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
@@ -70,7 +70,6 @@ fun UpcomingEventSection(
         } else {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(schedules) { schedule ->
-                    // Teruskan event klik ke UpcomingScheduleCard
                     UpcomingScheduleCard(
                         schedule = schedule,
                         onClick = { onScheduleClick(schedule) }
@@ -84,7 +83,7 @@ fun UpcomingEventSection(
 @Composable
 fun UpcomingScheduleCard(
     schedule: ScheduleItem,
-    onClick: () -> Unit // <-- PARAMETER BARU
+    onClick: () -> Unit
 ) {
     val timeFormatter = SimpleDateFormat("HH:mm", Locale.getDefault())
     val timeString = timeFormatter.format(Date(schedule.tanggalPelaksanaan))
@@ -97,7 +96,7 @@ fun UpcomingScheduleCard(
         modifier = Modifier
             .width(220.dp)
             .height(110.dp)
-            .clickable(onClick = onClick) // <-- BUAT KARTU BISA DIKLIK
+            .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier
