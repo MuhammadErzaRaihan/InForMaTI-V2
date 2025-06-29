@@ -12,6 +12,7 @@ import com.example.projecthmti.domain.usecase.AddScheduleUseCase
 import com.example.projecthmti.domain.usecase.DeleteScheduleUseCase
 import com.example.projecthmti.domain.usecase.EditScheduleUseCase
 import com.example.projecthmti.domain.usecase.GetSchedulesUseCase
+import com.example.projecthmti.widget.UpcomingScheduleWidget
 import com.example.projecthmti.workers.NotificationWorker
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -88,7 +89,8 @@ class ScheduleViewModel(
                     addScheduleUseCase(scheduleToSave)
                 }
 
-                scheduleReminder(scheduleToSave, context)
+                UpcomingScheduleWidget().update(context)
+                scheduleReminders(scheduleToSave, context)
 
                 onDialogDismiss()
             } catch (e: Exception) {
@@ -97,25 +99,79 @@ class ScheduleViewModel(
         }
     }
 
-    fun deleteSchedule(schedule: ScheduleItem, context: Context) {
+
+    private fun scheduleReminders(schedule: ScheduleItem, context: Context) {
+        val workManager = WorkManager.getInstance(context)
+
+        val reminderTime30Min = schedule.tanggalPelaksanaan - TimeUnit.MINUTES.toMillis(30)
+        val delay30Min = reminderTime30Min - System.currentTimeMillis()
+
+        if (delay30Min > 0) {
+            val data30Min = workDataOf(
+                NotificationWorker.KEY_SCHEDULE_TITLE to schedule.title,
+                NotificationWorker.KEY_NOTIFICATION_TYPE to NotificationWorker.TYPE_30_MIN_REMINDER
+            )
+            val workRequest30Min = OneTimeWorkRequestBuilder<NotificationWorker>()
+                .setInitialDelay(delay30Min, TimeUnit.MILLISECONDS)
+                .setInputData(data30Min)
+                .build()
+
+            // Nama unik untuk pekerjaan ini
+            workManager.enqueueUniqueWork(
+                "reminder_30min_${schedule.id}",
+                ExistingWorkPolicy.REPLACE,
+                workRequest30Min
+            )
+        }
+
+        val onTimeReminderTime = schedule.tanggalPelaksanaan
+        val onTimeDelay = onTimeReminderTime - System.currentTimeMillis()
+
+        if (onTimeDelay > 0) {
+            val onTimeData = workDataOf(
+                NotificationWorker.KEY_SCHEDULE_TITLE to schedule.title,
+                NotificationWorker.KEY_NOTIFICATION_TYPE to NotificationWorker.TYPE_ON_TIME_REMINDER
+            )
+            val onTimeWorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+                .setInitialDelay(onTimeDelay, TimeUnit.MILLISECONDS)
+                .setInputData(onTimeData)
+                .build()
+
+            workManager.enqueueUniqueWork(
+                "reminder_ontime_${schedule.id}",
+                ExistingWorkPolicy.REPLACE,
+                onTimeWorkRequest
+            )
+        }
+    }
+
+    private fun cancelReminders(schedule: ScheduleItem, context: Context) {
+        val workManager = WorkManager.getInstance(context)
+        workManager.cancelUniqueWork("reminder_30min_${schedule.id}")
+        workManager.cancelUniqueWork("reminder_ontime_${schedule.id}")
+    }
+
+        fun deleteSchedule(schedule: ScheduleItem, context: Context) {
         viewModelScope.launch {
             try {
                 deleteScheduleUseCase(schedule)
                 cancelReminder(schedule, context)
+
+                UpcomingScheduleWidget().update(context)
+
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = e.message) }
             }
         }
     }
 
+
     private fun scheduleReminder(schedule: ScheduleItem, context: Context) {
         val workManager = WorkManager.getInstance(context)
         val data = workDataOf(NotificationWorker.KEY_SCHEDULE_TITLE to schedule.title)
 
-        // --- KUNCI PERUBAHAN ---
-        // Waktu pengingat sekarang adalah waktu pelaksanaan jadwal itu sendiri.
+
         val reminderTime = schedule.tanggalPelaksanaan
-        // Hitung jeda dari sekarang sampai waktu pelaksanaan.
         val delay = reminderTime - System.currentTimeMillis()
 
         if (delay > 0) {

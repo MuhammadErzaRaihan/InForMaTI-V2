@@ -26,6 +26,8 @@ import com.example.projecthmti.ui.components.BottomNavBar
 import com.example.projecthmti.ui.theme.Screen.MemberScreen
 import com.example.projecthmti.ui.theme.Screen.NotifScreen
 import com.example.projecthmti.ui.theme.component.*
+import com.example.projecthmti.ui.theme.screen.chat.ChatScreen
+
 
 @Preview
 @Composable
@@ -140,6 +142,9 @@ fun MainContent(
             }
             1 -> {
                 MemberScreen()
+            }
+            2 -> {
+                ChatScreen()
             }
             3 -> {
                 NotifScreen()

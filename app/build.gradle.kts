@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp") version "2.0.0-1.0.21"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -25,8 +26,7 @@ android {
     }
     splits {
         abi {
-            // Menonaktifkan pembuatan APK terpisah untuk setiap arsitektur CPU
-            // pada build 'debug'. Ini akan menghasilkan satu APK universal.
+
             isEnable = false
         }
     }
@@ -83,6 +83,12 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
-
-
+    implementation("androidx.glance:glance-appwidget:1.1.0")
+    implementation("androidx.glance:glance-material3:1.1.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.patrykandpatrick.vico:compose:1.14.0")
+    implementation("com.patrykandpatrick.vico:compose-m3:1.14.0")
 }

@@ -42,6 +42,7 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
             val isLoggedIn = authRepository.login(username, password)
             if (isLoggedIn) {
                 SessionManager.loggedInUserEmail = username
+                SessionManager.loggedInUserRole = user.role
                 onSuccess(username)
             } else {
                 onError("Email atau password salah")

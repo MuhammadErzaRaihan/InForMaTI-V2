@@ -14,9 +14,7 @@ data class UserEntity(
     val gender: String,
     val email: String,
     val password: String,
-    val profilePictureUri: String? = null
+    val profilePictureUri: String? = null,
+    val role: String = "MEMBER"
 )
 
-// Mapper
-fun UserEntity.toDomainModel(): User = User(id, name, nim, dob, gender, email, password)
-fun User.toEntity(): UserEntity = UserEntity(id, name, nim, dob, gender, email, password)

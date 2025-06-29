@@ -6,7 +6,9 @@ import android.widget.DatePicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -116,11 +118,8 @@ fun ScheduleCard(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    // --- KUNCI PERBAIKAN ADA DI SINI ---
-    // Mengganti "Yelp" dengan "yyyy" yang merupakan pola format tahun yang benar.
     val formattedDate = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale.getDefault())
         .format(Date(item.tanggalPelaksanaan))
-    // --- SAMPAI SINI ---
 
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -227,7 +226,11 @@ fun ScheduleInputDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = if (schedule == null) "Tambah Jadwal" else "Edit Jadwal") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("Judul") })
                 OutlinedTextField(value = pelaksana, onValueChange = { pelaksana = it }, label = { Text("Pelaksana") })
                 ExposedDropdownMenuBox(

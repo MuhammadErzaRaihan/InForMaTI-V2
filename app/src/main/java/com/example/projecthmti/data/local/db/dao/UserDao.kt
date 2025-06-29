@@ -21,4 +21,7 @@ interface UserDao {
 
     @Query("SELECT * FROM users ORDER BY name ASC")
     fun getAllUsers(): Flow<List<UserEntity>>
+
+    @Query("SELECT COUNT(*) FROM users WHERE email = :email")
+    suspend fun isEmailExists(email: String): Int
 }

@@ -15,12 +15,13 @@ import com.example.projecthmti.data.local.db.entity.NotificationEntity
 
 @Database(
     entities = [ScheduleEntity::class, UserEntity::class, NotificationEntity::class],
-    version = 4,
+    version = 5,
     exportSchema = true,
     autoMigrations = [
         AutoMigration (from = 1, to = 2),
         AutoMigration (from = 2, to = 3),
-        AutoMigration (from = 3, to = 4)
+        AutoMigration (from = 3, to = 4),
+        AutoMigration (from = 4, to = 5)
     ]
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -55,25 +56,20 @@ abstract class AppDatabase : RoomDatabase() {
             super.onCreate(db)
             INSTANCE?.let { database ->
                 CoroutineScope(Dispatchers.IO).launch {
-                    populateSchedules(database.scheduleDao())
                     populateUsers(database.userDao())
                 }
             }
         }
 
-        suspend fun populateSchedules(scheduleDao: ScheduleDao) {
-            // ... (kode populate schedule yang sudah ada)
-        }
-
         suspend fun populateUsers(userDao: UserDao) {
-            // Pre-populate akun 'hmti' dengan detail yang sudah ada
             val hmtiUser = UserEntity(
                 name = "Muhammad Erza Raihan",
                 nim = "2310817210027/H1G115222",
-                dob = 946684800000L, // 1 Januari 2000
+                dob = 946684800000L,
                 gender = "Laki-laki",
-                email = "hmti", // Gunakan 'hmti' sebagai email/username untuk login
-                password = "123456"
+                email = "hmti",
+                password = "123456",
+                role = "ADMIN"
             )
             userDao.registerUser(hmtiUser)
         }
