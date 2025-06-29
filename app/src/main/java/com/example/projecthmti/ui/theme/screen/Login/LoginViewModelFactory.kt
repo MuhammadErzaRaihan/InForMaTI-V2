@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen.Login
+package com.example.projecthmti.ui.theme.screen.Login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

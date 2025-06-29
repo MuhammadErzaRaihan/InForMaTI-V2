@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen.member
+package com.example.projecthmti.ui.theme.screen.member
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

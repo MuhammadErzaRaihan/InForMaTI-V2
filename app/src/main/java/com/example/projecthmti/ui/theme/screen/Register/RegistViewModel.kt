@@ -1,9 +1,8 @@
-package com.example.projecthmti.ui.theme.Screen.Register
+package com.example.projecthmti.ui.theme.screen.Register
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.projecthmti.data.local.db.entity.UserEntity
 import com.example.projecthmti.domain.model.User
 import com.example.projecthmti.domain.repository.AuthRepository
 import com.example.projecthmti.domain.usecase.RegisterUserUseCase

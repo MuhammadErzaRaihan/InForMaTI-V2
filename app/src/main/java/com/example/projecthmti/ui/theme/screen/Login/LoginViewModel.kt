@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen.Login
+package com.example.projecthmti.ui.theme.screen.Login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,9 +41,16 @@ class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
         viewModelScope.launch {
             val isLoggedIn = authRepository.login(username, password)
             if (isLoggedIn) {
-                SessionManager.loggedInUserEmail = username
-                SessionManager.loggedInUserRole = user.role
-                onSuccess(username)
+
+                val user = authRepository.findUserByEmail(username)
+
+                if (user != null) {
+                    SessionManager.loggedInUserEmail = user.email
+                    SessionManager.loggedInUserRole = user.role
+                    onSuccess(user.email)
+                } else {
+                    onError("Gagal mendapatkan detail pengguna setelah login.")
+                }
             } else {
                 onError("Email atau password salah")
             }

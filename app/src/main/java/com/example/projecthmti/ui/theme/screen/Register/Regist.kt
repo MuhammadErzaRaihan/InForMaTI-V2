@@ -1,9 +1,7 @@
-package com.example.projecthmti.ui.theme.Screen.Register
+package com.example.projecthmti.ui.theme.screen.Register
 
 import android.app.DatePickerDialog
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

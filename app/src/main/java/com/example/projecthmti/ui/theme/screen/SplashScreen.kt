@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen
+package com.example.projecthmti.ui.theme.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

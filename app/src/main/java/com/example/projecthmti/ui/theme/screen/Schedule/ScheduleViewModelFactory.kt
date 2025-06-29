@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen.Schedule
+package com.example.projecthmti.ui.theme.screen.Schedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

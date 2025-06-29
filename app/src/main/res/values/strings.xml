@@ -38,6 +38,8 @@
     <string name="submit">Submit</string>
     <string name="Member_List">Member List</string>
     <string name="already">Already Had Account?</string>
+    <string name="feed">Suggestion</string>
+
     <string name="widget_description">Showing Upcoming Schedule</string>
 
 

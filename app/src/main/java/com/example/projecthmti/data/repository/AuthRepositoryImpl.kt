@@ -23,7 +23,10 @@ class AuthRepositoryImpl(private val userDao: UserDao) : AuthRepository {
     }
 
     override suspend fun isEmailRegistered(email: String): Boolean {
-        // Mengembalikan true jika jumlah email yang cocok lebih dari 0.
         return userDao.isEmailExists(email) > 0
+    }
+
+    override suspend fun findUserByEmail(email: String): UserEntity? {
+        return userDao.findUserByEmail(email)
     }
 }

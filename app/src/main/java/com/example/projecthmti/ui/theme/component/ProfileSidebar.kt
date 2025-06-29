@@ -38,6 +38,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.RateReview
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
@@ -50,6 +51,7 @@ fun ProfileSidebar(
     onDismiss: () -> Unit,
     onProfileClick: () -> Unit,
     onSettingsClick: () -> Unit,
+    onSuggestionClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -119,6 +121,13 @@ fun ProfileSidebar(
                             icon = Icons.Default.Settings,
                             text = stringResource(R.string.settings),
                             onClick = onSettingsClick,
+                            textColor = colorScheme.onSurface
+                        )
+
+                        ProfileMenuItem(
+                            text = stringResource(R.string.feed),
+                            icon = Icons.Default.RateReview,
+                            onClick = onSuggestionClick,
                             textColor = colorScheme.onSurface
                         )
 

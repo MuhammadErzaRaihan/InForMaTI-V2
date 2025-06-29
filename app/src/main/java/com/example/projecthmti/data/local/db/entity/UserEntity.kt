@@ -1,5 +1,6 @@
 package com.example.projecthmti.data.local.db.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.projecthmti.domain.model.User
@@ -15,6 +16,6 @@ data class UserEntity(
     val email: String,
     val password: String,
     val profilePictureUri: String? = null,
-    val role: String = "MEMBER"
-)
+    @ColumnInfo(defaultValue = "MEMBER")
+    val role: String = "MEMBER")
 

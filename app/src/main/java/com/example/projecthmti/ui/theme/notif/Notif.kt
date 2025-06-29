@@ -1,9 +1,5 @@
-package com.example.projecthmti.ui.theme.Screen
+package com.example.projecthmti.ui.theme.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,7 +25,6 @@ import com.example.projecthmti.R
 import com.example.projecthmti.data.local.db.AppDatabase
 import com.example.projecthmti.data.local.db.entity.NotificationEntity
 import com.example.projecthmti.ui.theme.notif.NotifViewModel
-import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
 

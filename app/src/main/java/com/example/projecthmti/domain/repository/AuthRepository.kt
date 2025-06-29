@@ -1,5 +1,6 @@
 package com.example.projecthmti.domain.repository
 
+import com.example.projecthmti.data.local.db.entity.UserEntity
 import com.example.projecthmti.domain.model.User
 
 /**
@@ -10,8 +11,10 @@ interface AuthRepository {
 
     suspend fun login(username: String, password: String): Boolean
 
-    // register sekarang menerima model 'User'
     suspend fun register(user: User)
 
     suspend fun isEmailRegistered(email: String): Boolean
+
+    suspend fun findUserByEmail(email: String): UserEntity?
+
 }

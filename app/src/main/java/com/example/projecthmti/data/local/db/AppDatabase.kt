@@ -41,7 +41,6 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "hmti_database"
                 )
-                    // Pastikan untuk menambahkan callback di sini
                     .addCallback(DatabaseCallback(context))
                     .build()
                 INSTANCE = instance
@@ -50,7 +49,6 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-    // Callback untuk mengisi data awal
     private class DatabaseCallback(private val context: Context) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
@@ -72,6 +70,20 @@ abstract class AppDatabase : RoomDatabase() {
                 role = "ADMIN"
             )
             userDao.registerUser(hmtiUser)
+
+
+            val newAdmin = UserEntity(
+                name = "Administrator",
+                nim = "0000000000000",
+                dob = System.currentTimeMillis(),
+                gender = "Lainnya",
+                email = "admin",
+                password = "admin123",
+                role = "ADMIN"
+            )
+            userDao.registerUser(newAdmin)
         }
+
+
     }
 }

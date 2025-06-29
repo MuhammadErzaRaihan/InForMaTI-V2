@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen.Register
+package com.example.projecthmti.ui.theme.screen.Register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

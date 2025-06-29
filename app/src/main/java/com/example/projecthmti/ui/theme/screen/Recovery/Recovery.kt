@@ -1,4 +1,4 @@
-package com.example.projecthmti.ui.theme.Screen.Recovery
+package com.example.projecthmti.ui.theme.screen.Recovery
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
